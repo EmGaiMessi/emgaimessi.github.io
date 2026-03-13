@@ -2,37 +2,192 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Web Tạo Mã QR</title>
+<title>QR Generator</title>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-</head>	
-<body style="text-align:center;font-family:Arial">
-<h2>Tạo Mã QR</h2>
-<input id="text" placeholder="Nhập nội dung cần tạo mã QR" style="width:250px;height:30px">
-<br><br>
-<button onclick="taoQR()">Tạo mã QR</button>
-<br><br>
-<div id="qrcode"></div>
+
+<style>
+
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#667eea,#764ba2);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:15px;
+width:380px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+position:relative;
+}
+
+h2{
+margin-top:0;
+}
+
+input{
+width:100%;
+padding:10px;
+font-size:16px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+}
+
+button{
+margin-top:15px;
+padding:12px;
+width:100%;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+.download{
+background:#28a745;
+}
+
+#qrcode{
+margin-top:20px;
+display:flex;
+justify-content:center;
+animation:fade 0.5s ease;
+position:relative;
+}
+
+#logo{
+position:absolute;
+width:50px;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+display:none;
+}
+
+.links{
+margin-top:20px;
+font-size:14px;
+}
+
+.links a{
+text-decoration:none;
+color:#667eea;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:scale(0.8);
+}
+to{
+opacity:1;
+transform:scale(1);
+}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>QR Code Generator</h2>
+
+<input id="text" placeholder="Nhập nội dung cần tạo QR">
+
+<select id="color">
+<option value="black">QR màu đen</option>
+<option value="blue">QR màu xanh</option>
+<option value="red">QR màu đỏ</option>
+<option value="green">QR màu xanh lá</option>
+</select>
+
+<button onclick="taoQR()">Tạo QR</button>
+
+<button class="download" onclick="taiQR()">Tải QR về máy</button>
+
+<div id="qrcode">
+<img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg">
+</div>
+
+<div class="links">
+<b>Liên hệ</b><br>
+<a href="https://www.facebook.com/nguyen.inh.gia.bao.63335/" target="_blank">Facebook</a> |
+<a href="https://www.youtube.com/@Emgaimessi" target="_blank">Youtube</a>
+</div>
+
+</div>
+
 <script>
-function taoQR() {
-document.getElementById("qrcode").innerHTML="";
-let text = document.getElementById("text").value;
-new QRCode(document.getElementById("qrcode"), {
-text: text,
-width: 300,
-height: 300
+
+let qr;
+
+function taoQR(){
+
+let text=document.getElementById("text").value;
+let color=document.getElementById("color").value;
+
+if(text==""){
+alert("Vui lòng nhập nội dung!");
+return;
+}
+
+document.getElementById("qrcode").innerHTML='<img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg">';
+
+qr=new QRCode(document.getElementById("qrcode"),{
+text:text,
+width:250,
+height:250,
+colorDark:color,
+colorLight:"#ffffff"
 });
 
+setTimeout(()=>{
+document.getElementById("logo").style.display="block";
+},100);
+
 }
+
+function taiQR(){
+
+let img=document.querySelector("#qrcode img");
+
+if(!img){
+alert("Hãy tạo QR trước!");
+return;
+}
+
+let link=document.createElement("a");
+link.href=img.src;
+link.download="qrcode.png";
+link.click();
+
+}
+
 </script>
+
 </body>
 </html>
-<br><br>
-<b>Thông tin liên hệ</b>
-<br>
-<a href="https://www.facebook.com/nguyen.inh.gia.bao.63335/">Facebook</a> 
-<br>
-<a href="https://www.youtube.com/@Emgaimessi">Youtube</a> 
-
-
-
-
