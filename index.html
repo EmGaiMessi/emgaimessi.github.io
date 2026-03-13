@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>QR Generator</title>
+<title>Emgaimessi</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -22,7 +22,7 @@ margin:0;
 background:white;
 padding:30px;
 border-radius:15px;
-width:380px;
+width:400px;
 text-align:center;
 box-shadow:0 10px 30px rgba(0,0,0,0.3);
 position:relative;
@@ -32,19 +32,13 @@ h2{
 margin-top:0;
 }
 
-input{
+input,select{
 width:100%;
 padding:10px;
 font-size:16px;
 border-radius:6px;
 border:1px solid #ccc;
-}
-
-select{
-width:100%;
-padding:10px;
 margin-top:10px;
-border-radius:6px;
 }
 
 button{
@@ -72,7 +66,6 @@ background:#28a745;
 margin-top:20px;
 display:flex;
 justify-content:center;
-animation:fade 0.5s ease;
 position:relative;
 }
 
@@ -95,15 +88,13 @@ text-decoration:none;
 color:#667eea;
 }
 
+.fade{
+animation:fade 0.5s ease;
+}
+
 @keyframes fade{
-from{
-opacity:0;
-transform:scale(0.8);
-}
-to{
-opacity:1;
-transform:scale(1);
-}
+from{opacity:0; transform:scale(0.8);}
+to{opacity:1; transform:scale(1);}
 }
 
 </style>
@@ -114,9 +105,18 @@ transform:scale(1);
 
 <div class="card">
 
-<h2>QR Code Generator</h2>
+<h2>Tạo Mã QR</h2>
 
-<input id="text" placeholder="Nhập nội dung cần tạo QR">
+<select id="type">
+<option value="text">QR nội dung / link</option>
+<option value="wifi">QR WiFi</option>
+<option value="facebook">QR Facebook</option>
+</select>
+
+<input id="text" placeholder="Nhập nội dung hoặc link">
+
+<input id="wifi_name" placeholder="Tên WiFi (chỉ dùng cho WiFi)" style="display:none">
+<input id="wifi_pass" placeholder="Mật khẩu WiFi" style="display:none">
 
 <select id="color">
 <option value="black">QR màu đen</option>
@@ -125,16 +125,18 @@ transform:scale(1);
 <option value="green">QR màu xanh lá</option>
 </select>
 
+<input type="file" id="logoUpload">
+
 <button onclick="taoQR()">Tạo QR</button>
 
-<button class="download" onclick="taiQR()">Tải QR về máy</button>
+<button class="download" onclick="taiQR()">Tải QR</button>
 
 <div id="qrcode">
-<img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg">
+<img id="logo">
 </div>
 
 <div class="links">
-<b>Liên hệ</b><br>
+<b>Thông tin liên hệ</b><br>
 <a href="https://www.facebook.com/nguyen.inh.gia.bao.63335/" target="_blank">Facebook</a> |
 <a href="https://www.youtube.com/@Emgaimessi" target="_blank">Youtube</a>
 </div>
@@ -145,20 +147,54 @@ transform:scale(1);
 
 let qr;
 
+document.getElementById("type").addEventListener("change",function(){
+
+let type=this.value;
+
+document.getElementById("wifi_name").style.display="none";
+document.getElementById("wifi_pass").style.display="none";
+
+if(type=="wifi"){
+document.getElementById("wifi_name").style.display="block";
+document.getElementById("wifi_pass").style.display="block";
+}
+
+});
+
 function taoQR(){
 
+let type=document.getElementById("type").value;
 let text=document.getElementById("text").value;
 let color=document.getElementById("color").value;
 
-if(text==""){
-alert("Vui lòng nhập nội dung!");
+let data="";
+
+if(type=="text"){
+data=text;
+}
+
+if(type=="facebook"){
+data="https://facebook.com/"+text;
+}
+
+if(type=="wifi"){
+
+let name=document.getElementById("wifi_name").value;
+let pass=document.getElementById("wifi_pass").value;
+
+data=`WIFI:T:WPA;S:${name};P:${pass};;`;
+
+}
+
+if(data==""){
+alert("Nhập nội dung trước!");
 return;
 }
 
-document.getElementById("qrcode").innerHTML='<img id="logo" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg">';
+document.getElementById("qrcode").innerHTML='<img id="logo">';
 
 qr=new QRCode(document.getElementById("qrcode"),{
-text:text,
+text:data,
 width:250,
 height:250,
 colorDark:color,
@@ -166,8 +202,31 @@ colorLight:"#ffffff"
 });
 
 setTimeout(()=>{
-document.getElementById("logo").style.display="block";
-},100);
+document.getElementById("qrcode").classList.add("fade");
+},50);
+
+loadLogo();
+
+}
+
+function loadLogo(){
+
+let file=document.getElementById("logoUpload").files[0];
+
+if(!file) return;
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+let logo=document.getElementById("logo");
+
+logo.src=e.target.result;
+logo.style.display="block";
+
+}
+
+reader.readAsDataURL(file);
 
 }
 
@@ -181,8 +240,10 @@ return;
 }
 
 let link=document.createElement("a");
+
 link.href=img.src;
 link.download="qrcode.png";
+
 link.click();
 
 }
