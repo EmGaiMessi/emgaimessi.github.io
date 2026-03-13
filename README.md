@@ -1,1 +1,35 @@
 # emgaimessi.github.io
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Phan Mem Tao Ma QR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>	
+<body style="text-align:center;font-family:Arial">
+<h2>Phan Mem Tao Ma QR</h2>
+<input id="text" placeholder="Nhap noi dung can tao QR..." style="width:250px;height:30px">
+<br><br>
+<button onclick="taoQR()">Tao QR</button>
+<br><br>
+<div id="qrcode"></div>
+<script>
+function taoQR() {
+document.getElementById("qrcode").innerHTML="";
+let text = document.getElementById("text").value;
+new QRCode(document.getElementById("qrcode"), {
+text: text,
+width: 300,
+height: 300
+});
+
+}
+</script>
+</body>
+</html>
+<br><br>
+<b>Thong tin lien he</b>
+<br>
+<a href="https://www.facebook.com/nguyen.inh.gia.bao.63335/">Facebook</a> 
+<br>
+<a href="https://www.youtube.com/@Emgaimessi">Youtube</a> 
