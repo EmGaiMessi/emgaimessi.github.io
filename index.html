@@ -3,11 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Emgaimessi</title>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <style>
-
 body{
 font-family:Arial;
 background:linear-gradient(135deg,#667eea,#764ba2);
@@ -17,7 +14,6 @@ align-items:center;
 height:100vh;
 margin:0;
 }
-
 .card{
 background:white;
 padding:30px;
@@ -27,11 +23,9 @@ text-align:center;
 box-shadow:0 10px 30px rgba(0,0,0,0.3);
 position:relative;
 }
-
 h2{
 margin-top:0;
 }
-
 input,select{
 width:100%;
 padding:10px;
@@ -40,7 +34,6 @@ border-radius:6px;
 border:1px solid #ccc;
 margin-top:10px;
 }
-
 button{
 margin-top:15px;
 padding:12px;
@@ -53,22 +46,18 @@ background:linear-gradient(135deg,#667eea,#764ba2);
 color:white;
 transition:0.3s;
 }
-
 button:hover{
 transform:scale(1.03);
 }
-
 .download{
 background:#28a745;
 }
-
 #qrcode{
 margin-top:20px;
 display:flex;
 justify-content:center;
 position:relative;
 }
-
 #logo{
 position:absolute;
 width:50px;
@@ -77,122 +66,86 @@ left:50%;
 transform:translate(-50%,-50%);
 display:none;
 }
-
 .links{
 margin-top:20px;
 font-size:14px;
 }
-
 .links a{
 text-decoration:none;
 color:#667eea;
 }
-
 .fade{
 animation:fade 0.5s ease;
 }
-
 @keyframes fade{
 from{opacity:0; transform:scale(0.8);}
 to{opacity:1; transform:scale(1);}
 }
-
 </style>
-
 </head>
-
 <body>
-
 <div class="card">
-
 <h2>Tạo Mã QR</h2>
-
 <select id="type">
 <option value="text">QR nội dung / link</option>
 <option value="wifi">QR WiFi</option>
 <option value="facebook">QR Facebook</option>
 </select>
-
 <input id="text" placeholder="Nhập nội dung hoặc link">
-
 <input id="wifi_name" placeholder="Tên WiFi (chỉ dùng cho WiFi)" style="display:none">
 <input id="wifi_pass" placeholder="Mật khẩu WiFi" style="display:none">
-
 <select id="color">
 <option value="black">QR màu đen</option>
 <option value="blue">QR màu xanh</option>
 <option value="red">QR màu đỏ</option>
 <option value="green">QR màu xanh lá</option>
 </select>
-
 <input type="file" id="logoUpload">
-
 <button onclick="taoQR()">Tạo Mã QR</button>
-
 <button class="download" onclick="taiQR()">Tải QR về máy</button>
-
 <div id="qrcode">
 <img id="logo">
 </div>
-
 <div class="links">
 <b>Thông tin liên hệ</b><br>
 <a href="https://www.facebook.com/nguyen.inh.gia.bao.63335/" target="_blank">Facebook</a> |
 <a href="https://www.youtube.com/@Emgaimessi" target="_blank">Youtube</a>
 </div>
-
 </div>
-
 <script>
-
 let qr;
-
 document.getElementById("type").addEventListener("change",function(){
-
 let type=this.value;
-
 document.getElementById("wifi_name").style.display="none";
 document.getElementById("wifi_pass").style.display="none";
-
 if(type=="wifi"){
 document.getElementById("wifi_name").style.display="block";
 document.getElementById("wifi_pass").style.display="block";
 }
 
 });
-
 function taoQR(){
-
 let type=document.getElementById("type").value;
 let text=document.getElementById("text").value;
 let color=document.getElementById("color").value;
-
 let data="";
-
 if(type=="text"){
 data=text;
 }
-
 if(type=="facebook"){
 data="https://facebook.com/"+text;
 }
-
 if(type=="wifi"){
-
 let name=document.getElementById("wifi_name").value;
 let pass=document.getElementById("wifi_pass").value;
-
 data=`WIFI:T:WPA;S:${name};P:${pass};;`;
 
 }
-
 if(data==""){
 alert("Nhập nội dung trước!");
 return;
 }
-
 document.getElementById("qrcode").innerHTML='<img id="logo">';
-
 qr=new QRCode(document.getElementById("qrcode"),{
 text:data,
 width:250,
@@ -200,7 +153,6 @@ height:250,
 colorDark:color,
 colorLight:"#ffffff"
 });
-
 setTimeout(()=>{
 document.getElementById("qrcode").classList.add("fade");
 },50);
@@ -208,48 +160,32 @@ document.getElementById("qrcode").classList.add("fade");
 loadLogo();
 
 }
-
 function loadLogo(){
-
 let file=document.getElementById("logoUpload").files[0];
-
 if(!file) return;
-
 let reader=new FileReader();
-
 reader.onload=function(e){
-
 let logo=document.getElementById("logo");
-
 logo.src=e.target.result;
 logo.style.display="block";
-
 }
 
 reader.readAsDataURL(file);
-
 }
 
 function taiQR(){
-
 let img=document.querySelector("#qrcode img");
-
 if(!img){
 alert("Hãy tạo QR trước!");
 return;
 }
-
 let link=document.createElement("a");
-
 link.href=img.src;
 link.download="qrcode.png";
-
 link.click();
-
+  
 }
-
 </script>
-
 </body>
 </html>
 
